@@ -14,60 +14,65 @@ action:
     link: /
 
 features:
-  - title: Java 虚拟机  🧰
+  - title: Java & JVM 
     details: there is articles about java language and java vitrual machine knowledges
-    link: /book/java-jvm
+    link: /book/java/index.html
+    icon: java
 
-  - title: 数据库基础 💬
+  - title: DataBase
     details: Start pageview statistics and comment support with Valine and Vssue
-    link: /book/db
+    link: /book/db/index.html
+    icon: mysql
 
-  - title: 存储 & 搜索引擎  ℹ
+  - title: Store & Search
     details: Add author, writing date, reading time, word count and other information to your article
-    link: /book/store
+    link: /book/store/index.html
+    icon: storage
 
-  - title: 操作系统 & 命令行工具 📝
+  - title: Linux & CLI
     details: Add date, tags and category to your articles, then article, tag, category and timeline list will be auto generated
-    link: https://vuepress-theme-hope.github.io/v1/guide/blog/intro.html
+    link: /book/linux/index.html
+    icon: linux
 
-  - title: 算法 & 数据结构 🔐
+  - title: 算法 & 数据结构
     details: Encrypt you article based on path and folders, so that only the one you want could see them
     link: https://vuepress-theme-hope.github.io/v1/guide/feature/encrypt.html
+    icon: function
 
-  - title: 系统架构 🎨
+  - title: 系统架构
     details: Supports custom theme colors and allows users to switch between preset theme colors
     link: https://vuepress-theme-hope.github.io/v1/guide/interface/theme-color.html
+    icon: tree
 
-  - title: 前端技术 🌙
+  - title: 前端技术
     details: Switch between light and dark modes freely
     link: https://vuepress-theme-hope.github.io/v1/guide/interface/darkmode.html
+    icon: react
 
-  - title: 后端技术  🗺
+  - title: 后端技术
     details: Generate a Sitemap for your website
     link: https://vuepress-theme-hope.github.io/v1/guide/feature/sitemap.html
+    icon: back-stage
 
-  - title: 计算展望 📡
+  - title: 计算展望
     details: You can generate feed, and let users to subcribe it
     link: https://vuepress-theme-hope.github.io/v1/guide/feature/feed.html
+    icon: computer
 
-  - title: 移动开发 📲
+  - title: 移动开发
     details: The built-in PWA plugin will make your website more like an APP.
     link: https://vuepress-theme-hope.github.io/v1/guide/feature/pwa.html
+    icon: android
 
-  - title: 效率工具 🔧
+  - title: 效率工具
     details: Turn on TypeScript support for your VuePress
     link: https://vuepress-theme-hope.github.io/v1/guide/feature/typescript.html
+    icon: repair
 
-  - title: 其他 ✨
+  - title: 其他
     details: Including icon support, path navigation, footer support, fullscreen button, blog homepage, etc.
     link: https://vuepress-theme-hope.github.io/v1/guide/feature/
+    icon: customize
 
 copyrightText: false
-footer: MIT Licensed | Copyright © 2019-present Mr. Hope
----
-
-This is an example of a normal homepage. You can place your main content here.
-
-To use this layout, you need to set `home: true` in the page front matter.
-
-For related descriptions of configuration items, please see [Project HomePage Layout Config](https://vuepress-theme-hope.github.io/v1/guide/layout/home.html).
+footer: Copyright © 2022 All rights reserved. | <a href="https://beian.miit.gov.cn/"> 皖ICP备17025334号

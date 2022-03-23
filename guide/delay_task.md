@@ -18,7 +18,7 @@ urlName:
 
 这是比较常见也比较简单的一种方式，所有的订单或者所有的命令一般都会存储在数据库中。启动线程去扫数据库或者一个数据库定时Job，找到那些超时的数据，直接更新状态，或者拿出来执行一些操作。这种方式很简单，不会引入其他的技术，开发周期短。但是如果数据量比较大，千万级甚至更多，插入频率很高的话，这种方式极有可能在性能上会出现一些问题，查找和更新对会占用很多时间，轮询频率高的话甚至会影响数据入库。一种可以尝试的方式就是使用类似TBSchedule或Elastic-Job这样的分布式的任务调度加上数据分片功能，把需要判断的数据分到不同的机器上执行，但这种方式本质还有没有变的。如果数据量进一步增大，那扫数据库肯定就不行了。另一方面，对于订单这类数据，我们也许会遇到分库分表，那上述方案就会变得过于复杂，得不偿失。同时对于一些定时任务要求精准的任务，就需要吧轮询的时间间隔控制好，过大可能造成时间不准确，过小可能增大服务器以及数据库的压力，甚至出现服务无法使用的，所以这种方式对于大量订单的情况还是不建议使用。
 
-<a name="Y74M2"></a>
+
 ## 3、延时队列实现
 
 
@@ -66,7 +66,7 @@ public static void main(String[] args) throws InterruptedException {
 ```
 
 
-<a name="FDTzY"></a>
+
 ## 4、线程池实现
 JDK自带的一种线程池，它能调度一些命令在一段时间之后执行，或者周期性的执行。文章开头的一些业务场景主要使用第一种方式，即在一段时间之后执行某个操作。
 ```java
@@ -81,14 +81,14 @@ JDK自带的一种线程池，它能调度一些命令在一段时间之后执�
 
 
 基于延时队列和线程池技术的延时任务，都可以通过添加任务的当时维持，比如在Spring环境中，在任务创建之后，调用添加订单任务的方法来添加延时任务，然后全局通过全局变量Map<ID,TASK> 的方式可以持有任务对象，若任务删除或者关闭可以通过ID找到任务并取消TASK的执行。笔者这里简单实现一个基于线程池的定时任务队列，可以实现定时任务的执行： [https://github.com/taoes/SevenScheduled](https://github.com/taoes/SevenScheduled)
-<a name="eatZ6"></a>
+
 ## 5、Redis 延时队列
 
-<a name="f6gOw"></a>
+
 ### 5.1 使用Zsort实现
 延时队列可以通过 Redis 的 zset 来实现。我们将消息序列化成一个字符串作为 zset 的value，这个消息的到期处理时间作为 score，然后用多个线程轮询 zset 获取到期的任务进行处理，多个线程是为了保障可用性。因为CAP理论，可用性提高，所以需要考虑并发争抢任务，确保一致性。如果Zset集合为空，那么将会陷入死循环，Redis的QPS也会非常高，所以需要在一次获取完成后休眠一秒中或者使用等待-通知模型。
 
-<a name="iwNPC"></a>
+
 ### 5.2 使用超时通知
 修改redis 配置 redis.conf   添加 "notify-keyspace-events Ex" 然后实现一个监听器
 
@@ -130,15 +130,16 @@ public class Subscriber {
 ```
 
 
-<a name="ZvF4Q"></a>
+
 ## 6、基于时间轮的方案
 > 参考文章 [https://www.w3cschool.cn/architectroad/architectroad-trigger-timed-task.html](https://www.w3cschool.cn/architectroad/architectroad-trigger-timed-task.html)
 
 
+::: tip
 有大佬基于此实现了一个简单的基于Java的实现方案 ，可以留作参考  [https://gitee.com/itman666/wheel-timer-queue](https://gitee.com/itman666/wheel-timer-queue)
+:::
 
 
-<a name="W2yP0"></a>
 ## 7、使用消息队列
 部分消息队列实现了延时队列的功能，比如ActiveMQ、RockeTMQ等等，也有一些不支持延时队列，但可以通过其他手段实现的 比如RabbitMQ等。基于延时队列我们可以使用消息队列监听的方式实现延时任务。
 [ActiveMQ 启用延时队列](https://blog.csdn.net/weixin_44204885/article/details/89025122)[RabbitMQ 实现延时队列](https://blog.csdn.net/zhuyu19911016520/article/details/80656583?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.compare&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.compare)

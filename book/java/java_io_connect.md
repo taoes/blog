@@ -14,16 +14,16 @@ category: java
 
 
 
-网络通信的基本模型是C/S模式即 客户端-服务端 模式，客户端通过和服务端建立连接实现通信。因此服务端绑定某个端口, 并监听此端口的连接信息，在传统的BIO线程模型中 ServerSocket 负责绑定IP和端口，监听连接；Socket则负责发起连接操作，双方在建立连接之后等待数据传输。<br />
+网络通信的基本模型是C/S模式即 客户端-服务端 模式，客户端通过和服务端建立连接实现通信。因此服务端绑定某个端口, 并监听此端口的连接信息，在传统的BIO线程模型中 ServerSocket 负责绑定IP和端口，监听连接；Socket则负责发起连接操作，双方在建立连接之后等待数据传输。
 
-<br />在Java的网络通信模型中提供了BIO(阻塞IO)， NIO(新IO或者非阻塞IO) 以及 AIO (异步IO)，下面笔者将会对这三种网络IO模型做一个简单的阐述。<br />
+在Java的网络通信模型中提供了BIO(阻塞IO)， NIO(新IO或者非阻塞IO) 以及 AIO (异步IO)，下面笔者将会对这三种网络IO模型做一个简单的阐述。
 
 <!--more-->
 ## BIO 阻塞IO
 
-<br />BIO操作在每次接收到连接请求的时候都会进行新的线程的创建，而线程则又是系统中非常珍贵的资源，因此BIO适合连接数很少的应用程序，代码简单易懂。其基础架构模型如下<br />
+BIO操作在每次接收到连接请求的时候都会进行新的线程的创建，而线程则又是系统中非常珍贵的资源，因此BIO适合连接数很少的应用程序，代码简单易懂。其基础架构模型如下
 ![BIO模式通讯处理模型](https://pic.zhoutao123.com/bio.png)
-<br />
+
 
 ```java
     ServerSocket socket = new ServerSocket();
@@ -46,7 +46,7 @@ category: java
     }
 ```
 
-<br />在接收到大量连接的请示，程序会创建大量的线程，而线程则是系统中非常重要的资源，创建大量的线程可能会造成系统卡顿等问题。因此创建了使用线程池优化的方案，但是即使使用线程池也没有从本质上解决大量请求的问题。<br />
+在接收到大量连接的请示，程序会创建大量的线程，而线程则是系统中非常重要的资源，创建大量的线程可能会造成系统卡顿等问题。因此创建了使用线程池优化的方案，但是即使使用线程池也没有从本质上解决大量请求的问题。
 
 ```java
 private void handleBIOWithThreadPool()throws IOException{
@@ -82,15 +82,15 @@ static class SocketTask implements Runnable {
 
 ##  NIO 非阻塞IO
 
-<br />因为BIO的性能问题，从Java1.4 开始 JDK提供了NIO模型，**NIO是一种同步非阻塞的IO操作模型, ****在Linux操作系统中NIO基于Epoll模型实现高效的IO操作。**著名的网络IO编程框架Netty底层的实现就是依赖于NIO。<br />
-<br />其主要依赖一下三个操作方法<br />
+因为BIO的性能问题，从Java1.4 开始 JDK提供了NIO模型，**NIO是一种同步非阻塞的IO操作模型, ****在Linux操作系统中NIO基于Epoll模型实现高效的IO操作。**著名的网络IO编程框架Netty底层的实现就是依赖于NIO。
+其主要依赖一下三个操作方法
 
 1. epoll_create 创建epoll线程模型,底层是epoll示例与红黑树模型
 1. epoll_ctl 向epoll实例中注册需要监听的文件描述符，文件描述符以红黑树的行书保存
 1. epoll_wait(timeout) 等待epoll模型中出现时间，比如连接事件以及可读事件
 
 
-<br />但是在Linux 2.4 之前，Linux系统一直使用的select线程模型，而非epoll模型。而 select模型与epoll模型最大的区别是:<br />
+但是在Linux 2.4 之前，Linux系统一直使用的select线程模型，而非epoll模型。而 select模型与epoll模型最大的区别是:
 
 - select 在接收收到注册的时间后，需要遍历所有的连接，从中过滤出有效的连接才能进行处理，这对存在大量连接，但是活跃的连接很少的情况下效率非常低。
 - epoll 则需要要在连接的时候想 Selector 注册感兴趣的事件，当事件触发的时候(系统中断)，则将其移到另外一个集合中，业务系统仅仅需要通过遍历此集合即可，而非遍历大量的Channel，epoll以此来提高效率。
@@ -133,7 +133,7 @@ static class SocketTask implements Runnable {
     }
 ```
 
-<br />那么这种问题有什么好的解决方案呢？epoll 为我们提供了一个高效的解决方案，在系统接收到有效的数据的时候，将之放到另外一个集合中，业务系统只需要判断这个集合就可以，不需要遍历所有的连接，实现了高效处理的网络通信模型。下面的代码中展示了基于此模式的网络通信模型
+那么这种问题有什么好的解决方案呢？epoll 为我们提供了一个高效的解决方案，在系统接收到有效的数据的时候，将之放到另外一个集合中，业务系统只需要判断这个集合就可以，不需要遍历所有的连接，实现了高效处理的网络通信模型。下面的代码中展示了基于此模式的网络通信模型
 ```java
 private static void nio() throws IOException {
 
@@ -194,8 +194,8 @@ private static void nio() throws IOException {
 <a name="tdePI"></a>
 ## AIO 异步IO
 
-<br />AIO全称 AsynchnorousIO 操作，AIO是一种异步非阻塞的IO模型，其适用于连接数比较多且连接比较长（重操作）的架构，比较相册服务器，充分调用OS参与并发操作，编程比较复杂，jdk7开始支持AIO。<br />
-<br />AIO的基础操作代码非常简单，仅仅关注与数据的读写，而 `AsynchronousHandler` 则是自定的读写操作，当Channel 数据读写操作完成的时候，会触发此类的对应方法
+AIO全称 AsynchnorousIO 操作，AIO是一种异步非阻塞的IO模型，其适用于连接数比较多且连接比较长（重操作）的架构，比较相册服务器，充分调用OS参与并发操作，编程比较复杂，jdk7开始支持AIO。
+AIO的基础操作代码非常简单，仅仅关注与数据的读写，而 `AsynchronousHandler` 则是自定的读写操作，当Channel 数据读写操作完成的时候，会触发此类的对应方法
 ```java
 class AIOService implements Runnable {
 
@@ -222,7 +222,7 @@ class AIOService implements Runnable {
 }
 ```
 
-<br />AsynchronousHandler 的定义如下
+AsynchronousHandler 的定义如下
 
 ```java
 class AsynchronousHandler implements CompletionHandler<AsynchronousSocketChannel, AIOService> {
@@ -272,7 +272,7 @@ class AsynchronousHandler implements CompletionHandler<AsynchronousSocketChannel
     }
 ```
 
-<br />其客户端的定义已非常简单，代码的释义已经在注释中说明<br />
+其客户端的定义已非常简单，代码的释义已经在注释中说明
 
 ```java
 public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
@@ -315,7 +315,7 @@ public static void main(String[] args) throws IOException, ExecutionException, I
 }
 ```
 
-<br />
+
 
 > 本文中的代码仓库位于 [https://gitee.com/taoes_admin/architect/tree/master/network/src/main/java/com/zhoutao123/architect/network](https://gitee.com/taoes_admin/architect/tree/master/network/src/main/java/com/zhoutao123/architect/network)
 
