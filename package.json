@@ -2,7 +2,6 @@
   "name": "vuepress-theme-hope-template",
   "version": "2.0.0",
   "description": "A project of vuepress-theme-hope",
-  "type": "module",
   "license": "MIT",
   "scripts": {
     "docs:build": "vuepress build .",
