@@ -31,5 +31,5 @@ jobs:
         port: 22
         username: 'ubuntu'
         password: '${{ secrets.PASSWORD }} '
-        localDir:  '/home/runner/work/blog/dist'
+        localDir:  '/home/runner/work/blog/blog/dist'
         remoteDir: '/tmp/dist'
