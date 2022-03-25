@@ -16,19 +16,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: 设置NodeJS版本为 ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm install yarn && yarn install
     - run: yarn run docs:build
-      # 利用action把build好的文件上传到服务器/var/www/react-app路径下,需要确认此目录已在服务端创建
-    - name: deploy file to server
-      uses: wlixcc/SFTP-Deploy-Action@v1.0 
-      with:  
-        username: 'ubuntu'   #ssh user name
-        server: '${{ secrets.REMOTE_IP }}' #引用之前创建好的secret
-        ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} #引用之前创建好的secret
-        local_path: './dist/*'  # 对应我们项目build的文件夹路径
-        remote_path: '/tmp/dist'
+
+    - name: 上传文件到 ${{ secrets.IP }} 
+      uses: wangyucode/sftp-upload-action@v1.1
+      with:
+        host: '${{ secrets.IP }}'
+        port: 22
+        username: 'ubuntu'
+        password: '${{ secrets.PASSWORD }} '
+        localDir:  './dist/*'
+        remoteDir: '/tmp/dist'
