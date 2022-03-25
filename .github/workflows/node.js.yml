@@ -24,12 +24,12 @@ jobs:
     - run: npm install yarn && yarn install
     - run: yarn run docs:build
     - run: echo "当前工作地址`pwd`" && echo `ls` 
-    - name: 上传文件到 ${{ secrets.IP }} 
-      uses: wangyucode/sftp-upload-action@v1.1
+    - name: FTP/SFTP file deployer
+      uses: milanmk/actions-file-deployer@1.10
       with:
-        host: '${{ secrets.IP }}'
-        port: 22
-        username: 'ubuntu'
-        password: '${{ secrets.PASSWORD }} '
-        localDir:  '/home/runner/work/blog/blog/dist'
-        remoteDir: '/tmp/dist'
+        remote-host:  '${{ secrets.IP }}'
+        remote-user: 'ubuntu'
+        remote-password: '${{ secrets.PASSWORD }}'
+        local-path: '/home/runner/work/blog/blog/dist'
+        remote-path: '/home/ubuntu/wiki/dist'
+        debug: true

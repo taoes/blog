@@ -6,4 +6,4 @@ tag:
     - java
 ---
 
-Hi
+Hi, There is Java sidecar
